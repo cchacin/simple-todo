@@ -1,5 +1,6 @@
 package com.github.cchacin.simpletodo;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
@@ -22,6 +23,7 @@ public class MainActivity extends AppCompatActivity {
     private ArrayList<String> todoItems;
     private ArrayAdapter<String> aToDoAdapter;
     private EditText etEditText;
+    private ListView lvItems;
     private File file;
 
     @Override
@@ -30,7 +32,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         file = new File(getFilesDir(), "todo.txt");
         populateArrayItems();
-        ListView lvItems = (ListView) findViewById(R.id.lvItems);
+        lvItems = (ListView) findViewById(R.id.lvItems);
         lvItems.setAdapter(aToDoAdapter);
         etEditText = (EditText) findViewById(R.id.etEditText);
         lvItems.setOnItemLongClickListener(new OnItemLongClickListener() {
@@ -40,6 +42,15 @@ public class MainActivity extends AppCompatActivity {
                 aToDoAdapter.notifyDataSetChanged();
                 writeItems();
                 return true;
+            }
+        });
+        lvItems.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
+                final Intent i = new Intent(MainActivity.this, EditItemActivity.class);
+                i.putExtra("text", todoItems.get(position));
+                i.putExtra("position", position);
+                startActivityForResult(i, 20);
             }
         });
     }
@@ -91,5 +102,17 @@ public class MainActivity extends AppCompatActivity {
         aToDoAdapter.add(etEditText.getText().toString());
         etEditText.setText("");
         writeItems();
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (resultCode == 20) {
+            final String text = data.getExtras().getString("text");
+            final int position = data.getExtras().getInt("position");
+            todoItems.remove(position);
+            todoItems.add(position, text);
+            aToDoAdapter.notifyDataSetChanged();
+            writeItems();
+        }
     }
 }
