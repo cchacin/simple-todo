@@ -17,24 +17,26 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 
+import butterknife.Bind;
+import butterknife.ButterKnife;
+
 import static android.widget.AdapterView.OnItemLongClickListener;
 
 public class MainActivity extends AppCompatActivity {
     private ArrayList<String> todoItems;
     private ArrayAdapter<String> aToDoAdapter;
-    private EditText etEditText;
-    private ListView lvItems;
+    @Bind(R.id.etEditText) EditText etEditText;
+    @Bind(R.id.lvItems) ListView lvItems;
     private File file;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        ButterKnife.bind(this);
         file = new File(getFilesDir(), "todo.txt");
         populateArrayItems();
-        lvItems = (ListView) findViewById(R.id.lvItems);
         lvItems.setAdapter(aToDoAdapter);
-        etEditText = (EditText) findViewById(R.id.etEditText);
         lvItems.setOnItemLongClickListener(new OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(AdapterView<?> adapterView, View view, int position, long id) {

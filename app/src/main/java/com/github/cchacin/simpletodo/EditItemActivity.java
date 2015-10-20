@@ -8,18 +8,21 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 
+import butterknife.Bind;
+import butterknife.ButterKnife;
+
 public class EditItemActivity extends AppCompatActivity {
 
-    private EditText editText;
-    private int position;
+    @Bind(R.id.editText) EditText editText;
+    int position;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_item);
+        ButterKnife.bind(this);
         String text = getIntent().getStringExtra("text");
         position = getIntent().getIntExtra("position", 0);
-        editText = (EditText) findViewById(R.id.editText);
         editText.setText(text);
     }
 
