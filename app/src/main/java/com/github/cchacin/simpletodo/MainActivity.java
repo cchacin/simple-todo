@@ -6,7 +6,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ListView;
@@ -19,8 +18,8 @@ import java.util.ArrayList;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
-
-import static android.widget.AdapterView.OnItemLongClickListener;
+import butterknife.OnItemClick;
+import butterknife.OnItemLongClick;
 
 public class MainActivity extends AppCompatActivity {
     private ArrayList<String> todoItems;
@@ -37,24 +36,20 @@ public class MainActivity extends AppCompatActivity {
         file = new File(getFilesDir(), "todo.txt");
         populateArrayItems();
         lvItems.setAdapter(aToDoAdapter);
-        lvItems.setOnItemLongClickListener(new OnItemLongClickListener() {
-            @Override
-            public boolean onItemLongClick(AdapterView<?> adapterView, View view, int position, long id) {
-                todoItems.remove(position);
-                aToDoAdapter.notifyDataSetChanged();
-                writeItems();
-                return true;
-            }
-        });
-        lvItems.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
-                final Intent i = new Intent(MainActivity.this, EditItemActivity.class);
-                i.putExtra("text", todoItems.get(position));
-                i.putExtra("position", position);
-                startActivityForResult(i, 20);
-            }
-        });
+    }
+
+    @OnItemLongClick(R.id.lvItems) boolean onItemLongClick(int position) {
+        todoItems.remove(position);
+        aToDoAdapter.notifyDataSetChanged();
+        writeItems();
+        return true;
+    }
+
+    @OnItemClick(R.id.lvItems) void onItemClick(int position) {
+        final Intent i = new Intent(MainActivity.this, EditItemActivity.class);
+        i.putExtra("text", todoItems.get(position));
+        i.putExtra("position", position);
+        startActivityForResult(i, 20);
     }
 
     private void populateArrayItems() {
